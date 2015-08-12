@@ -7,8 +7,7 @@ The uncompressed dataset is loaded into a dataframe
 
 
 ```r
-f <- read.csv("activity.csv")
-## f$datetime <- as.POSIXct(f$date)+f$interval*60
+f <- read.csv(unz("activity.zip","activity.csv"))
 ```
 
 ## What is mean total number of steps taken per day?
@@ -52,7 +51,7 @@ The result is used to create a plot.
 
 ```r
 t <- tapply(f$steps,f$interval,mean,na.rm=T)
-plot(t,type="l",main="Average Number of Steps per 5 Min. Interval",ylab="Steps",xlab="5 Min. Interval")
+plot(t,type="l",main="Average Number of Steps per 5 Min. Interval",ylab="Steps",xlab="5 Min. Interval (288 Daily Samples)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
