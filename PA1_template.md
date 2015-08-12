@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: yes
+---
 
 
 ## Loading and preprocessing the data
@@ -29,7 +34,7 @@ gp <- ggplot(data=y,aes(x=y$x))+geom_histogram(binwidth=1)+xlab("Thousands of St
 print(gp)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
 
 Finally, we compute the mean and the median of the number of steps per day.
 
@@ -54,7 +59,7 @@ t <- tapply(f$steps,f$interval,mean,na.rm=T)
 plot(t,type="l",main="Average Number of Steps per 5 Min. Interval",ylab="Steps",xlab="5 Min. Interval (288 Daily Samples)")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 Then, we compute the maximum number of (mean) steps.
 
@@ -110,7 +115,7 @@ gp <- ggplot(data=y1,aes(x=y1$x1))+geom_histogram(binwidth=1)+xlab("Thousands of
 print(gp)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
 And finally, we compute the mean and the median of the number of steps per day.
 
@@ -150,7 +155,7 @@ f3 <- gather(f2,Daytype,Value,-interval)
 ggplot(f3,aes(interval,Value))+facet_grid(.~Daytype)+geom_line()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
 The pattern for the weekends looks somewhat different from weekdays, starting at a later time and achieving, overall, lower peak values.
 
