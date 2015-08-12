@@ -3,7 +3,7 @@
 
 ## Loading and preprocessing the data
 
-The uncompressed dataset is loaded into a dataframe
+The compressed dataset is loaded into a dataframe for processing
 
 
 ```r
@@ -12,9 +12,9 @@ f <- read.csv(unz("activity.zip","activity.csv"))
 
 ## What is mean total number of steps taken per day?
 
-The number of steps is computed by using the *tapply()* function, computing the mean across the days in the input dataset.
+The mean number of steps per day is obtained by using the *tapply()* function.
 
-Then an histogram (using the *ggplot2* library) is created.
+Then we create an histogram (using the *ggplot2* library).
 
 
 ```r
@@ -60,26 +60,25 @@ Then, we compute the maximum number of (mean) steps.
 
 ```r
 m <- max(t,na.rm=T)
-mi <- as.integer(names(t[which(t %in% m)]))
+mi <- which(t %in% m)
+mt <- as.integer(names(t[mi]))
 
-print(sprintf("Maximum activity (%f steps) is at %d:%d",m,mi%/%100,mi %% 100))
+print(sprintf("Maximum activity (%f steps) is #%d, which occured at %d:%d",
+              m,mi,
+              mt %/% 100,mt %% 100))
 ```
 
 ```
-## [1] "Maximum activity (206.169811 steps) is at 8:35"
+## [1] "Maximum activity (206.169811 steps) is #104, which occured at 8:35"
 ```
 
 
 ## Imputing missing values
-For now we have just ignored missing values. A new dataset is created by replacing the NAs with the **mean** of steps, for the other days, in the corresponding interval
-
-Then, we compute once again the mean of the number of steps per 5Min interval, also using the *tapply()* function, and plot the result.
+For now we have just ignored missing values which were contained in the original dataset.
 
 
 ```r
-f1 <- f
-
-fna <- is.na(f1$steps)
+fna <- is.na(f$steps)
 print(sprintf("The original dataset contains %d NAs values",sum(fna)))
 ```
 
@@ -87,11 +86,21 @@ print(sprintf("The original dataset contains %d NAs values",sum(fna)))
 ## [1] "The original dataset contains 2304 NAs values"
 ```
 
+A new dataset is created by replacing the NAs with the **mean** of steps, for the other days, in the corresponding interval
+
+
+
 ```r
+f1 <- f
 for (i in which(fna)) {
     f1$steps[i]  <-  t[which(names(t)==f1$interval[i])]
 }
+```
 
+Then, we compute once again the mean of the number of steps per 5Min interval, also using the *tapply()* function, and plot the result.
+
+
+```r
 x1 <- tapply(f1$steps,f1$date,sum)
 
 y1 <- as.data.frame(x1)/1000
@@ -101,9 +110,9 @@ gp <- ggplot(data=y1,aes(x=y1$x1))+geom_histogram(binwidth=1)+xlab("Thousands of
 print(gp)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
-And we compute the mean and the median of the number of steps per day.
+And finally, we compute the mean and the median of the number of steps per day.
 
 
 ```r
@@ -114,15 +123,15 @@ print(sprintf("Average number of steps is %f, median %f",mean(x1),median(x1)))
 ## [1] "Average number of steps is 10766.188679, median 10766.188679"
 ```
 
-By comparing the two plots, it looks like the distribution has not changed much (as expected using the mean values has caused a greater aggregation).
+By comparing the two plots, it looks like the shape of the distribution has not changed much, which could be expected since we replaced NAs with mean values (causing a greater aggregation).
 
-Also *mean* and *median* have not changed significantly.
+Values for *mean* and *median* have not changed significantly.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 We create a new column (factor) for each day, in order to distinguish weeekdays from weekends. 
 
-This is done by using the *weekdays()* function on the *date* colum, and checking whether the result is *Saturday* or *Sunday*.
+This is done by using the *weekdays()* function on the *$date* colum, and checking whether the result is *Saturday* or *Sunday*.
 
 
 ```r
@@ -131,7 +140,7 @@ library(tidyr)
 f1$dayType <- as.factor(ifelse(weekdays(as.Date(f1$date,"%Y-%m-%d"),abbreviate=F) %in% c("Saturday","Sunday"),"Weekend","Weekdays"))
 ```
 
-Then, using the *tapply()* function, the mean value across intervals and daytypes is computed, generating the final plot.
+Then, using the *tapply()* function, the mean value across *$intervals* and *$daytypes* is computed, generating the final plot.
 
 The pattern for the weekends looks somewhat different from weekdays, starting at a later time and achieving, overall, lower peak values.
 
@@ -143,6 +152,6 @@ f3 <- gather(f2,Daytype,Value,-interval)
 ggplot(f3,aes(interval,Value))+facet_grid(.~Daytype)+geom_line()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
 
 
